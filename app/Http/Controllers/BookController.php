@@ -18,7 +18,7 @@ class BookController extends Controller
         return response()->json([
             "success" => true,
             "data" => $books,
-            "message" => "Acción realizada exitosamente."
+            "message" => "Acción realizada exitosamente"
         ]);
     }
 
