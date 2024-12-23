@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
 {
@@ -60,25 +62,36 @@ class UserController extends Controller
      *             @OA\Property(
      *                 property="message",
      *                 type="string",
-     *                 example="Los datos proporcionados no son válidos."
+     *                 example= "The name field is required. (and 2 more errors)"
      *             ),
      *             @OA\Property(
      *                 property="errors",
-     *                 type="object",
-     *                 additionalProperties={
-     *                     "type": "array",
-     *                     "items": {
-     *                         "type": "string",
-     *                         "example": "El campo email es obligatorio."
-     *                     }
-     *                 }
+     *                 type="array",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(
+     *                         property="name",
+     *                         type="string",
+     *                         example= "The name field is required"
+     *                     ),
+     *                     @OA\Property(
+     *                         property="email",
+     *                         type="string",
+     *                         example= "The email field is required"
+     *                     ),
+     *                     @OA\Property(
+     *                         property="password",
+     *                         type="string",
+     *                         example= "The email field is required"
+     *                     )
+     *                 )
      *             )
      *         )
      *     )
      * )
      */
 
-    public function createUser(Request $request)
+    public function createUser(UserRequest $request)
     {
         $user = User::create($request->all());
         $token = $user->createToken("TOKEN_NAME")->plainTextToken;
