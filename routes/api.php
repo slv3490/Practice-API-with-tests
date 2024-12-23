@@ -11,4 +11,4 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post("/books/filter-by-author", [BookController::class, "filtered"])->name("books.filtered");
     Route::post("/books/{id}/borrow", [BookController::class, "borrow"])->name("books.borrow");
 });
-Route::post("/user/create", [UserController::class, "createUser"]);
+Route::post("/users", [UserController::class, "createUser"]);
