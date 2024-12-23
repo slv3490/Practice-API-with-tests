@@ -76,6 +76,18 @@ class BookController extends Controller
      *                 example="Ocurrió un error interno"
      *             )
      *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Sin autenticación necesaria",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example= "Unauthenticated."
+     *             )
+     *         )
      *     )
      * )
      */
@@ -87,7 +99,7 @@ class BookController extends Controller
             "success" => true,
             "data" => $books,
             "message" => "Acción realizada exitosamente"
-        ]);
+        ], 200);
     }
 
     /**
@@ -109,15 +121,21 @@ class BookController extends Controller
      *     description="Crea un nuevo libro y devuelve los detalles del libro creado.",
      *     @OA\RequestBody(
      *         required=true,
-     *         description="Datos del libro a crear",
+     *         description="Datos minimos para crear un libro.",
      *         @OA\JsonContent(
      *             type="object",
-     *             required={"title", "published_year"},
+     *             required={"author", "title", "published_year"},
+     *             @OA\Property(
+     *                 property="author",
+     *                 type="string",
+     *                 example="Leonel Enrique Silvera",
+     *                 description="El campo de autor es obligatorio."
+     *             ),
      *             @OA\Property(
      *                 property="title",
      *                 type="string",
      *                 example="El Gran Libro",
-     *                 description="El título del libro. Debe ser único en la base de datos."
+     *                 description="El título del libro debe ser único en la base de datos."
      *             ),
      *             @OA\Property(
      *                 property="published_year",
@@ -141,9 +159,9 @@ class BookController extends Controller
      *                 property="data",
      *                 type="object",
      *                 @OA\Property(
-     *                     property="id",
-     *                     type="integer",
-     *                     example=1
+     *                     property="author",
+     *                     type="string",
+     *                     example="Leonel Enrique Silvera"
      *                 ),
      *                 @OA\Property(
      *                     property="title",
@@ -156,10 +174,15 @@ class BookController extends Controller
      *                     example=2024
      *                 ),
      *                 @OA\Property(
-     *                     property="message",
-     *                     type="string",
-     *                     example="Acción realizada exitosamente."
-     *                 )
+     *                     property="id",
+     *                     type="integer",
+     *                     example=1
+     *                 ),
+     *             ),
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Acción realizada exitosamente."
      *             )
      *         )
      *     ),
@@ -179,6 +202,42 @@ class BookController extends Controller
      *                 example="El título debe ser único y el año de publicación debe estar entre 1900 y el año actual."
      *             )
      *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description= "Contenido no procesable.",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="El título debe ser único y el año de publicación debe estar entre 1900 y el año actual."
+     *             ),
+     *             @OA\Property(
+     *                 property="errors",
+     *                 type="array",
+     *                 @OA\items(
+     *                     type="object",
+     *                     @OA\Property(
+     *                         property="title",
+     *                         type="string",
+     *                         example= "El título ya está tomado."
+     *                     )
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Sin autenticación necesaria",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example= "Unauthenticated."
+     *             )
+     *         )
      *     )
      * )
      */
@@ -190,7 +249,7 @@ class BookController extends Controller
             "success" => true,
             "data" => $book,
             "message" => "Acción realizada exitosamente."
-        ]);
+        ], 200);
     }
 
     /**
@@ -237,15 +296,30 @@ class BookController extends Controller
      *                     example="El Gran Libro"
      *                 ),
      *                 @OA\Property(
+     *                     property="author",
+     *                     type="string",
+     *                     example="Leonel Enrique Silvera"
+     *                 ),
+     *                 @OA\Property(
      *                     property="published_year",
      *                     type="integer",
      *                     example=2024
      *                 ),
      *                 @OA\Property(
-     *                     property="message",
+     *                     property="status",
      *                     type="string",
-     *                     example="Acción realizada exitosamente."
+     *                     example="prestado"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="borrowed_at",
+     *                     type="string",
+     *                     example="2024-12-11 00:00:00"
      *                 )
+     *             ),
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Acción realizada exitosamente."
      *             )
      *         )
      *     ),
@@ -265,6 +339,18 @@ class BookController extends Controller
      *                 example="El libro no fue encontrado."
      *             )
      *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Sin autenticación necesaria",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example= "Unauthenticated."
+     *             )
+     *         )
      *     )
      * )
      */
@@ -273,11 +359,17 @@ class BookController extends Controller
     {
         $book = Book::find($id);
 
+        if(!$book) {
+            return response()->json([
+                "success" => false,
+                "message" => "El libro no fue encontrado."
+            ], 404);
+        }
         return response()->json([
             "success" => true,
             "data" => $book,
             "message" => "Acción realizada exitosamente."
-        ]);
+        ], 200);
     }
 
     /**
@@ -313,7 +405,12 @@ class BookController extends Controller
      *         description="Datos para actualizar el libro",
      *         @OA\JsonContent(
      *             type="object",
-     *             required={"title", "published_year"},
+     *             required={"author", "title", "published_year"},
+     *             @OA\Property(
+     *                 property="author",
+     *                 type="string",
+     *                 example= "Nuevo autor"
+     *             ),
      *             @OA\Property(
      *                 property="title",
      *                 type="string",
@@ -322,7 +419,7 @@ class BookController extends Controller
      *             @OA\Property(
      *                 property="published_year",
      *                 type="integer",
-     *                 example=2024
+     *                 example=2015
      *             )
      *         )
      *     ),
@@ -345,20 +442,35 @@ class BookController extends Controller
      *                     example=1
      *                 ),
      *                 @OA\Property(
+     *                     property="author",
+     *                     type="string",
+     *                     example="Nuevo autor"
+     *                 ),
+     *                 @OA\Property(
      *                     property="title",
      *                     type="string",
-     *                     example="Nuevo Título"
+     *                     example="El Gran Libro Actualizado"
      *                 ),
      *                 @OA\Property(
      *                     property="published_year",
      *                     type="integer",
-     *                     example=2024
+     *                     example=2000
      *                 ),
      *                 @OA\Property(
-     *                     property="message",
+     *                     property="status",
      *                     type="string",
-     *                     example="Acción realizada exitosamente."
-     *                 )
+     *                     example="disponible"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="borrowed_at",
+     *                     type="string",
+     *                     example="2024-12-11 00:00:00"
+     *                 ),
+     *             ),
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Acción realizada exitosamente."
      *             )
      *         )
      *     ),
@@ -395,14 +507,34 @@ class BookController extends Controller
      *                 example="Los datos proporcionados no son válidos."
      *             )
      *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Sin autenticación necesaria",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example= "Unauthenticated."
+     *             )
+     *         )
      *     )
      * )
      */
 
-    public function update(BookRequest $request, Book $book)
+    public function update(BookRequest $request, int $id)
     {
-        $book->update($request->all());
+        $book = Book::find($id);
+        if(!$book) {
+            return response()->json([
+                "success" => false,
+                "message" => "El libro no fue encontrado."
+            ]);
+        }
         
+        $book->update($request->all());
+
         return response()->json([
             "success" => true,
             "data" => $book,
@@ -463,23 +595,42 @@ class BookController extends Controller
      *                 example="El libro no fue encontrado."
      *             )
      *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Sin autenticación necesaria",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example= "Unauthenticated."
+     *             )
+     *         )
      *     )
      * )
      */
 
-    public function destroy(Book $book)
+    public function destroy($id)
     {
+        $book = Book::find($id);
+        if(!$book) {
+            return response()->json([
+                "success" => false,
+                "message" => "El libro no fue encontrado."
+            ]);
+        }
         $book->delete();
-
         return response()->json([
             "success" => true,
             "message" => "Acción realizada exitosamente."
         ]);
+
     }
 
     /**
-     * @OA\Get(
-     *     path="/api/books/filtered",
+     * @OA\Post(
+     *     path="/api/books/filter-by-author",
      *     summary="Filtrar libros por autor",
      *     tags={"Libros"},
      *     description="Filtra libros según el nombre del autor proporcionado",
@@ -490,7 +641,7 @@ class BookController extends Controller
      *         required=true,
      *         @OA\Schema(
      *             type="string",
-     *             example="J.K. Rowling"
+     *             example="Leonel Enrique Silvera"
      *         )
      *     ),
      *     @OA\Response(
@@ -526,12 +677,22 @@ class BookController extends Controller
      *                     @OA\Property(
      *                         property="author",
      *                         type="string",
-     *                         example="J.K. Rowling"
+     *                         example="Leonel Enrique Silvera"
      *                     ),
      *                     @OA\Property(
      *                         property="published_year",
      *                         type="integer",
      *                         example=1997
+     *                     ),
+     *                     @OA\Property(
+     *                         property="status",
+     *                         type="integer",
+     *                         example="disponible"
+     *                     ),
+     *                     @OA\Property(
+     *                         property="borrowed_at",
+     *                         type="string",
+     *                         example="2024-12-13 09:20:44"
      *                     )
      *                 )
      *             )
@@ -553,13 +714,25 @@ class BookController extends Controller
      *                 example="No se encontraron libros para el autor especificado."
      *             )
      *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Sin autenticación necesaria",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example= "Unauthenticated."
+     *             )
+     *         )
      *     )
      * )
      */
 
     public function filtered(Request $request)
     {
-        $books = Book::where("author", "LIKE", "%".$request->author."%")->firstOrFail();
+        $books = Book::where("author", "LIKE", "%".$request->author."%")->get();
 
         return response()->json([
             "success" => true,
@@ -645,6 +818,18 @@ class BookController extends Controller
      *                 property="message",
      *                 type="string",
      *                 example="Libro no encontrado."
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Sin autenticación necesaria",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example= "Unauthenticated."
      *             )
      *         )
      *     )
