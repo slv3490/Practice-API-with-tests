@@ -21,7 +21,7 @@ class BookTest extends TestCase
 
         $response->assertStatus(200)->assertJson([
             'success' => true,
-            'message' => "Acción realizada exitosamente."
+            'message' => "Acción realizada exitosamente"
         ]);
     }
 
@@ -231,6 +231,15 @@ class BookTest extends TestCase
         ]);
     }
 
+    public function test_can_not_find_a_book_for_delete(): void {
+
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->deleteJson(route('books.destroy', 999));
+
+        $response->assertStatus(404);
+    }
+
     //FILTERED
 
     public function test_can_filter_a_book() : void
@@ -265,6 +274,21 @@ class BookTest extends TestCase
                 "id" => 1
             ],
             "message" => "Acción realizada exitosamente."
+        ]);
+    }
+
+    public function test_no_book_belonging_to_that_author_could_be_found(): void {
+        
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->postJson(route("books.filtered"), [
+            "author" => "Leonel Silvera Enrique"
+        ]);
+
+        $response->assertStatus(404);
+        $response->assertJsonFragment([
+            "success" => false,
+            "message" => "No se ha encontrado ningun libro que pertenezca a Leonel Silvera Enrique"
         ]);
     }
 }
