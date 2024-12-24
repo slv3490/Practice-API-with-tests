@@ -266,19 +266,21 @@ class BookTest extends TestCase
         $response->assertExactJson([
             "success" => true,
             "data" => [
-                "title" => "Un titulo loren ipsum dolor a acts",
-                "author" => "Leonel Enrique Silvera",
-                "published_year" => 1940,
-                "status" => "disponible",
-                "borrowed_at" => "2024-12-12",
-                "id" => 1
+                [
+                    "title" => "Un titulo loren ipsum dolor a acts",
+                    "author" => "Leonel Enrique Silvera",
+                    "published_year" => 1940,
+                    "status" => "disponible",
+                    "borrowed_at" => "2024-12-12",
+                    "id" => 1
+                ]
             ],
             "message" => "Acción realizada exitosamente."
         ]);
     }
 
     public function test_no_book_belonging_to_that_author_could_be_found(): void {
-        
+
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)->postJson(route("books.filtered"), [

@@ -737,7 +737,7 @@ class BookController extends Controller
     {
         $books = Book::where("author", "LIKE", "%".$request->author."%")->get();
 
-        if(isEmpty($books)) {
+        if($books->isEmpty()) {
             return response()->json([
                 "success" => false,
                 "message" => "No se ha encontrado ningun libro que pertenezca a {$request->author}"
