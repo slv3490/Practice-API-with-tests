@@ -768,11 +768,6 @@ class BookController extends Controller
      *                 example=true
      *             ),
      *             @OA\Property(
-     *                 property="message",
-     *                 type="string",
-     *                 example="Acción realizada exitosamente."
-     *             ),
-     *             @OA\Property(
      *                 property="data",
      *                 type="object",
      *                 @OA\Property(
@@ -791,6 +786,11 @@ class BookController extends Controller
      *                     example="J.K. Rowling"
      *                 ),
      *                 @OA\Property(
+     *                     property="published_year",
+     *                     type="string",
+     *                     example="2024-12-24 10:40:04"
+     *                 ),
+     *                 @OA\Property(
      *                     property="status",
      *                     type="string",
      *                     example="prestado"
@@ -801,7 +801,12 @@ class BookController extends Controller
      *                     format="date-time",
      *                     example="2024-12-19T10:15:00"
      *                 )
-     *             )
+     *             ),
+     *             @OA\Property(
+     *                 property="message",
+     *                 type="string",
+     *                 example="Acción realizada exitosamente."
+     *             ),
      *         )
      *     ),
      *     @OA\Response(
@@ -847,7 +852,7 @@ class BookController extends Controller
             ], 404);
         }
         
-        $book->status = "prestado";
+        $book->status = $book->status === "prestado" ? "disponible" : "prestado";
         $book->borrowed_at = date("Y-m-d h:i:s");
         $book->save();
 
