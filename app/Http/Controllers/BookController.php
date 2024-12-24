@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\BookRequest;
 use App\Models\Book;
 use Illuminate\Http\Request;
+
+use function PHPUnit\Framework\isEmpty;
+
 /**
     * @OA\Info(
     *             title="Título que mostraremos en swagger", 
@@ -618,13 +621,13 @@ class BookController extends Controller
             return response()->json([
                 "success" => false,
                 "message" => "El libro no fue encontrado."
-            ]);
+            ], 404);
         }
         $book->delete();
         return response()->json([
             "success" => true,
             "message" => "Acción realizada exitosamente."
-        ]);
+        ], 200);
 
     }
 
@@ -711,7 +714,7 @@ class BookController extends Controller
      *             @OA\Property(
      *                 property="message",
      *                 type="string",
-     *                 example="No se encontraron libros para el autor especificado."
+     *                 example="No se ha encontrado ningun libro que pertenezca a <NombreAuthor>"
      *             )
      *         )
      *     ),
@@ -734,11 +737,18 @@ class BookController extends Controller
     {
         $books = Book::where("author", "LIKE", "%".$request->author."%")->get();
 
+        if(isEmpty($books)) {
+            return response()->json([
+                "success" => false,
+                "message" => "No se ha encontrado ningun libro que pertenezca a {$request->author}"
+            ], 404);
+        }
+
         return response()->json([
             "success" => true,
             "data" => $books,
             "message" => "Acción realizada exitosamente."
-        ]);
+        ], 200);
     }
 
     /**
