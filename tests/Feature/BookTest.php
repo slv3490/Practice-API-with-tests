@@ -50,7 +50,7 @@ class BookTest extends TestCase
 
         $response->assertStatus(200);
 
-        $response->assertValid(['title', 'published_year']);
+        $response->assertValid(['author', 'title', 'published_year']);
 
         $response->assertExactJson([
             "success" => true,
@@ -80,7 +80,7 @@ class BookTest extends TestCase
 
         $response = $this->actingAs($user)->postJson(route("books.store"), [
             "title" => "",
-            "author" => "Leonel Enrique Silvera",
+            "author" => "",
             "published_year" => "",
             "status" => "disponible",
             "borrowed_at" => "2024-12-12"
@@ -88,11 +88,11 @@ class BookTest extends TestCase
 
         $response->assertStatus(422);
 
-        $response->assertInvalid(['title', 'published_year']);
+        $response->assertInvalid(['author', 'title', 'published_year']);
         $this->assertDatabaseMissing("books", [
             "id" => 1,
             "title" => "",
-            "author" => "Leonel Enrique Silvera",
+            "author" => "",
             "published_year" => "",
             "status" => "disponible",
             "borrowed_at" => "2024-12-12"

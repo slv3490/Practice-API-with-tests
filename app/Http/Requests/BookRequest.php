@@ -23,6 +23,7 @@ class BookRequest extends FormRequest
     public function rules(): array
     {
         return [
+            "author" => "required",
             "title" => "required|unique:books,title",
             "published_year" => "required|integer|min:1900|max:" . date("Y")
         ];
