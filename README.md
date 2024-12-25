@@ -18,21 +18,7 @@ La meta principal del proyecto es repasar los conceptos basicos de API y testing
 
 ##### 5. [Arquitectura del Proyecto](#arquitectura-del-proyecto)
 
-##### 6. [Configuración](#configuración)
-
-##### 7. [Contribuciones](#contribuciones)
-
-##### 8. [Pruebas](#pruebas)
-
-##### 9. [Despliegue](#despliegue)
-
-##### 10. [Licencia](#licencia)
-
-##### 11. [Autor o Mantenedores](#autor-o-mantenedores)
-
-##### 12. [Preguntas Frecuentes (FAQ)](#preguntas-frecuentes-faq)
-
-##### 13. [Referencias](#referencias)
+##### 6. [Testing](#testing)
 
 ## Requisitos Previos
 
