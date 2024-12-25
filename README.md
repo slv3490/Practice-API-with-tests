@@ -107,7 +107,7 @@ Instala las dependencias necesarias con Composer:
 
 Puedes copiar el archivo `.env.example` y renómbralo como `.env` y luego, configura las credenciales de tu base de datos y otros ajustes en el archivo `.env`:
     
-    APP_NAME="Nombre de tu API"
+    APP_NAME="Nombre de tu aplicación"
     APP_URL=http://127.0.0.1:8000
     
     DB_CONNECTION=mysql
@@ -116,3 +116,162 @@ Puedes copiar el archivo `.env.example` y renómbralo como `.env` y luego, confi
     DB_DATABASE=nombre_base_datos
     DB_USERNAME=usuario
     DB_PASSWORD=contraseña
+
+### 4. Generar la Clave de la Aplicación
+
+Ejecuta el siguiente comando para generar una clave única para la aplicación:
+
+    php artisan key:generate
+
+### 5. Migrar la Base de Datos
+
+Ejecuta las migraciones para crear las tablas necesarias en la base de datos:
+
+    php artisan migrate
+
+### 6. Instalar Sanctum
+
+Publica los archivos de configuración de Laravel Sanctum:
+
+    php artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider"
+
+### 7. Iniciar el Servidor Local
+
+Inicia el servidor de desarrollo de Laravel:
+
+    php artisan serve
+
+## Uso del Proyecto
+
+El uso de esta API está documentado de manera interactiva mediante **Swagger UI**. Esta herramienta permite explorar los endpoints disponibles, probar las solicitudes directamente y obtener respuestas detalladas en tiempo real.
+
+### Acceso a Swagger UI
+
+Puedes acceder a la documentación de Swagger en la siguiente URL (asegúrate de tener el servidor en funcionamiento)
+
+### Autenticación
+
+Los endpoints de Books requieren autenticación mediante un token Bearer. Para autenticarte:
+
+1. Haz clic en el botón **Authorize** en la parte superior derecha de la interfaz de Swagger.
+2. Ingresa tu token de autenticación en el formato: Bearer {tu_token_aqui}
+3. Haz clic en **Authorize** y luego en **Close**.
+
+Una vez autenticado, Swagger UI enviará automáticamente el token en cada solicitud protegida.
+
+### Ejemplo de uso
+
+Haz click en el botón Try it out y rellenas los datos minimos para crear un libro.
+
+#### Crear un Libro
+
+```json
+{
+  "author": "Leonel Enrique Silvera",
+  "title": "El Gran Libro",
+  "published_year": 2024
+}
+```
+
+## Arquitectura del Proyecto
+
+Este proyecto sigue una arquitectura basada en el framework **Laravel**, con una separación clara de responsabilidades y componentes para facilitar la escalabilidad y el mantenimiento.
+
+### Autenticación y Seguridad
+
+El proyecto utiliza **Laravel Sanctum** para la autenticación basada en tokens. Esto permite:
+
+- Proteger rutas de la API.
+- Gestionar tokens personales para los usuarios.
+- Manejar autenticación stateless (sin sesiones).
+
+### Flujo de Trabajo de la API
+
+1. **Solicitudes Entrantes:**  
+   Las solicitudes llegan a través de las rutas definidas en `routes/api.php`.
+
+2. **Middleware:**  
+   Las solicitudes pasan por los middlewares, como la validación de tokens con Sanctum.
+
+3. **Controladores:**  
+   Los controladores procesan la solicitud, interactúan con los modelos y devuelven respuestas JSON.
+
+4. **Respuestas:**  
+   Las respuestas se estructuran en formato JSON para ser consumidas por clientes externos, como aplicaciones web o móviles.
+
+### Tecnología y Herramientas Utilizadas
+
+- **PHP ^8.2**: Lenguaje base del proyecto.
+- **Laravel ^11.31**: Framework principal.
+- **Sanctum ^4.0**: Autenticación basada en tokens.
+- **MySQL**: Sistema de gestión de base de datos.
+- **Swagger ^8.6 (L5 Swagger)**: Documentación interactiva de la API.
+
+## Testing
+
+Este proyecto incluye pruebas para garantizar la funcionalidad de los componentes clave.
+
+Para ejecutar las pruebas, asegúrate de haber instalado todas las dependencias del proyecto y de tener configurada la base de datos de pruebas si es necesario. Usa el siguiente comando:
+
+```
+php artisan test
+```
+
+### Configuración de la Base de Datos de Pruebas
+
+Si las pruebas requieren una base de datos, asegúrate de configurar correctamente el entorno de pruebas en el archivo `.env.testing`:
+
+```
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=nombre_de_base_de_datos_testing
+DB_USERNAME=usuario
+DB_PASSWORD=contraseña
+```
+
+### Ejemplo de una Prueba
+
+A continuación, un ejemplo de una prueba de característica para la creación de un recurso:
+
+#### Test para crear un libro
+
+```
+public function test_can_create_a_book(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->actingAs($user)->postJson(route("books.store"), [
+            "title" => "Un titulo loren ipsum dolor a acts",
+            "author" => "Leonel Enrique Silvera",
+            "published_year" => 2024,
+            "status" => "disponible",
+            "borrowed_at" => "2024-12-12"
+        ]);
+
+        $response->assertStatus(200);
+
+        $response->assertValid(['author', 'title', 'published_year']);
+
+        $response->assertExactJson([
+            "success" => true,
+            "data" => [
+                "title" => "Un titulo loren ipsum dolor a acts",
+                "author" => "Leonel Enrique Silvera",
+                "published_year" => 2024,
+                "status" => "disponible",
+                "borrowed_at" => "2024-12-12",
+                "id" => 1
+            ],
+            "message" => "Acción realizada exitosamente."
+        ]);
+        $this->assertDatabaseCount("books", 1);
+        $this->assertDatabaseHas("books", [
+            "title" => "Un titulo loren ipsum dolor a acts",
+            "author" => "Leonel Enrique Silvera",
+            "published_year" => 2024,
+            "status" => "disponible",
+            "borrowed_at" => "2024-12-12"
+        ]);
+    }
+```
