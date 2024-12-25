@@ -1,0 +1,931 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Título que mostraremos en swagger",
+        "description": "Descripcion",
+        "version": "1.0"
+    },
+    "paths": {
+        "/api/books": {
+            "get": {
+                "tags": [
+                    "Libros"
+                ],
+                "summary": "Obtener todos los libros",
+                "description": "Devuelve una lista de todos los libros.",
+                "operationId": "a9d13283dfab262e97af3c914d51b7a8",
+                "responses": {
+                    "200": {
+                        "description": "Acción realizada exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "title": {
+                                                        "type": "string",
+                                                        "example": "El Gran Libro"
+                                                    },
+                                                    "author": {
+                                                        "type": "string",
+                                                        "example": "Autor Ejemplo"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Acción realizada exitosamente"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Ocurrió un error interno"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Sin autenticación necesaria",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Libros"
+                ],
+                "summary": "Crear un nuevo libro",
+                "description": "Crea un nuevo libro y devuelve los detalles del libro creado.",
+                "operationId": "47047e95a700b3271b697e57d0965191",
+                "requestBody": {
+                    "description": "Datos minimos para crear un libro.",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "author",
+                                    "title",
+                                    "published_year"
+                                ],
+                                "properties": {
+                                    "author": {
+                                        "description": "El campo de autor es obligatorio.",
+                                        "type": "string",
+                                        "example": "Leonel Enrique Silvera"
+                                    },
+                                    "title": {
+                                        "description": "El título del libro debe ser único en la base de datos.",
+                                        "type": "string",
+                                        "example": "El Gran Libro"
+                                    },
+                                    "published_year": {
+                                        "description": "El año de publicación del libro. Debe ser un número entero entre 1900 y el año actual.",
+                                        "type": "integer",
+                                        "example": 2024
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Acción realizada exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "author": {
+                                                    "type": "string",
+                                                    "example": "Leonel Enrique Silvera"
+                                                },
+                                                "title": {
+                                                    "type": "string",
+                                                    "example": "El Gran Libro"
+                                                },
+                                                "published_year": {
+                                                    "type": "integer",
+                                                    "example": 2024
+                                                },
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Acción realizada exitosamente."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Solicitud incorrecta, parámetros faltantes o inválidos",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "El título debe ser único y el año de publicación debe estar entre 1900 y el año actual."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Contenido no procesable.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "El título debe ser único y el año de publicación debe estar entre 1900 y el año actual."
+                                        },
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "title": {
+                                                        "type": "string",
+                                                        "example": "El título ya está tomado."
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Sin autenticación necesaria",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/books/{id}": {
+            "get": {
+                "tags": [
+                    "Libros"
+                ],
+                "summary": "Obtener un libro por su ID",
+                "description": "Obtiene los detalles de un libro por su ID",
+                "operationId": "2fdd668eb661591758aff4c56ca9b66a",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del libro",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "1"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Acción realizada exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "title": {
+                                                    "type": "string",
+                                                    "example": "El Gran Libro"
+                                                },
+                                                "author": {
+                                                    "type": "string",
+                                                    "example": "Leonel Enrique Silvera"
+                                                },
+                                                "published_year": {
+                                                    "type": "integer",
+                                                    "example": 2024
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "example": "prestado"
+                                                },
+                                                "borrowed_at": {
+                                                    "type": "string",
+                                                    "example": "2024-12-11 00:00:00"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Acción realizada exitosamente."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Libro no encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "El libro no fue encontrado."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Sin autenticación necesaria",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Libros"
+                ],
+                "summary": "Actualizar un libro",
+                "description": "Actualiza un libro existente por su ID",
+                "operationId": "f5ca658c501a803d68655af0365e3802",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del libro a actualizar",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "1"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Datos para actualizar el libro",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "author",
+                                    "title",
+                                    "published_year"
+                                ],
+                                "properties": {
+                                    "author": {
+                                        "type": "string",
+                                        "example": "Nuevo autor"
+                                    },
+                                    "title": {
+                                        "type": "string",
+                                        "example": "Nuevo Título"
+                                    },
+                                    "published_year": {
+                                        "type": "integer",
+                                        "example": 2015
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Acción realizada exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "author": {
+                                                    "type": "string",
+                                                    "example": "Nuevo autor"
+                                                },
+                                                "title": {
+                                                    "type": "string",
+                                                    "example": "El Gran Libro Actualizado"
+                                                },
+                                                "published_year": {
+                                                    "type": "integer",
+                                                    "example": 2000
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "example": "disponible"
+                                                },
+                                                "borrowed_at": {
+                                                    "type": "string",
+                                                    "example": "2024-12-11 00:00:00"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Acción realizada exitosamente."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Libro no encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "El libro no fue encontrado."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Datos no válidos",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Los datos proporcionados no son válidos."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Sin autenticación necesaria",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Libros"
+                ],
+                "summary": "Eliminar un libro",
+                "description": "Elimina un libro existente por su ID",
+                "operationId": "1a9c26667c32b8ed5e5770d7a1cc9d5c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del libro a eliminar",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "1"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Acción realizada exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Acción realizada exitosamente."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Libro no encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "El libro no fue encontrado."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Sin autenticación necesaria",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/books/filter-by-author": {
+            "post": {
+                "tags": [
+                    "Libros"
+                ],
+                "summary": "Filtrar libros por autor",
+                "description": "Filtra libros según el nombre del autor proporcionado",
+                "operationId": "4db5a1d7d2695bfa8cbf3ced15b8e5c2",
+                "parameters": [
+                    {
+                        "name": "author",
+                        "in": "query",
+                        "description": "Nombre del autor a filtrar",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Leonel Enrique Silvera"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Acción realizada exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Acción realizada exitosamente."
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "title": {
+                                                        "type": "string",
+                                                        "example": "Harry Potter and the Philosopher's Stone"
+                                                    },
+                                                    "author": {
+                                                        "type": "string",
+                                                        "example": "Leonel Enrique Silvera"
+                                                    },
+                                                    "published_year": {
+                                                        "type": "integer",
+                                                        "example": 1997
+                                                    },
+                                                    "status": {
+                                                        "type": "integer",
+                                                        "example": "disponible"
+                                                    },
+                                                    "borrowed_at": {
+                                                        "type": "string",
+                                                        "example": "2024-12-13 09:20:44"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No se encontraron libros",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No se ha encontrado ningun libro que pertenezca a <NombreAuthor>"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Sin autenticación necesaria",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/books/{id}/borrow": {
+            "put": {
+                "tags": [
+                    "Libros"
+                ],
+                "summary": "Prestar un libro",
+                "description": "Marca un libro como prestado y guarda la fecha y hora del préstamo.",
+                "operationId": "0ba037c0a52e8ace964bc98cb1f3f848",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del libro que se desea prestar",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "1"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Acción realizada exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "title": {
+                                                    "type": "string",
+                                                    "example": "Harry Potter and the Philosopher's Stone"
+                                                },
+                                                "author": {
+                                                    "type": "string",
+                                                    "example": "J.K. Rowling"
+                                                },
+                                                "published_year": {
+                                                    "type": "string",
+                                                    "example": "2024-12-24 10:40:04"
+                                                },
+                                                "status": {
+                                                    "type": "string",
+                                                    "example": "prestado"
+                                                },
+                                                "borrowed_at": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2024-12-19T10:15:00"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Acción realizada exitosamente."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Libro no encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Libro no encontrado."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Sin autenticación necesaria",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/users": {
+            "post": {
+                "tags": [
+                    "Usuarios"
+                ],
+                "summary": "Crear un nuevo usuario",
+                "description": "Crea un nuevo usuario y devuelve un token de acceso.",
+                "operationId": "15cb7ac620df8a65f737624b240b8976",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "description": "Nombre del usuario",
+                                        "type": "string",
+                                        "example": "John Doe"
+                                    },
+                                    "email": {
+                                        "description": "Correo electrónico único del usuario",
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "johndoe@example.com"
+                                    },
+                                    "password": {
+                                        "description": "Contraseña del usuario",
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "securepassword123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Usuario creado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "token": {
+                                            "description": "Token de acceso generado para el usuario",
+                                            "type": "string",
+                                            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Datos de entrada inválidos",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The name field is required. (and 2 more errors)"
+                                        },
+                                        "errors": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "The name field is required"
+                                                    },
+                                                    "email": {
+                                                        "type": "string",
+                                                        "example": "The email field is required"
+                                                    },
+                                                    "password": {
+                                                        "type": "string",
+                                                        "example": "The email field is required"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Libros",
+            "description": "Libros"
+        },
+        {
+            "name": "Usuarios",
+            "description": "Usuarios"
+        }
+    ],
+    "components": {
+        "securitySchemes": {
+            "sanctum": {
+                "type": "apiKey",
+                "description": "Enter token in format (Bearer <token>)",
+                "name": "Authorization",
+                "in": "header"
+            }
+        }
+    },
+    "security": [
+        {
+            "sanctum": []
+        }
+    ]
+}
