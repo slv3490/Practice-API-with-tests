@@ -9,6 +9,6 @@ use App\Http\Controllers\UserController;
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::resource("books", BookController::class);
     Route::post("/books/filter-by-author", [BookController::class, "filtered"])->name("books.filtered");
-    Route::post("/books/{id}/borrow", [BookController::class, "borrow"])->name("books.borrow");
+    Route::put("/books/{id}/borrow", [BookController::class, "borrow"])->name("books.borrow");
 });
 Route::post("/users", [UserController::class, "createUser"]);
